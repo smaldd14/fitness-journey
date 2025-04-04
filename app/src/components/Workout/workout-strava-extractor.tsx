@@ -85,17 +85,20 @@ const WorkoutStravaExtractor: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-6">Workout to Strava</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="w-full">
+      <div className="grid grid-cols-1 gap-6">
         <div>
-          <Card>
-            <CardHeader>
-              <CardTitle>Extract Workout</CardTitle>
+          <Card className="border-orange-200">
+            <CardHeader className="bg-orange-50">
+              <CardTitle>Extract & Post to Strava</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <WorkoutSelector onSubmit={handleExtractWorkout} />
+              <WorkoutSelector 
+                onSubmit={handleExtractWorkout}
+                buttonText="Extract & Post to Strava"
+                headerText="One-Click Strava Post"
+                description="Extract workout data and immediately post it to Strava"
+              />
               
               <div className="flex items-center space-x-2 pt-2">
                 <Switch 
@@ -103,7 +106,9 @@ const WorkoutStravaExtractor: React.FC = () => {
                   checked={postToStrava}
                   onCheckedChange={setPostToStrava}
                 />
-                <Label htmlFor="post-to-strava">Post to Strava automatically</Label>
+                <Label htmlFor="post-to-strava" className="text-orange-700 font-medium">
+                  Post to Strava automatically
+                </Label>
               </div>
             </CardContent>
           </Card>
@@ -112,7 +117,7 @@ const WorkoutStravaExtractor: React.FC = () => {
         <div>
           <Card>
             <CardHeader>
-              <CardTitle>Result</CardTitle>
+              <CardTitle>Strava Post Results</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -160,24 +165,26 @@ const WorkoutStravaExtractor: React.FC = () => {
                       
                       <div className="mt-4">
                         <h4 className="font-medium mb-2">Exercises:</h4>
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Exercise</TableHead>
-                              <TableHead className="text-center">Sets</TableHead>
-                              <TableHead className="text-center">Avg. Reps</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {result.data?.sections[0]?.exercises.map((exercise, index) => (
-                              <TableRow key={index}>
-                                <TableCell>{exercise.name}</TableCell>
-                                <TableCell className="text-center">{exercise.sets}</TableCell>
-                                <TableCell className="text-center">{exercise.reps}</TableCell>
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Exercise</TableHead>
+                                <TableHead className="text-center">Sets</TableHead>
+                                <TableHead className="text-center">Avg. Reps</TableHead>
                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                            </TableHeader>
+                            <TableBody>
+                              {result.data?.sections[0]?.exercises.map((exercise, index) => (
+                                <TableRow key={index}>
+                                  <TableCell>{exercise.name}</TableCell>
+                                  <TableCell className="text-center">{exercise.sets}</TableCell>
+                                  <TableCell className="text-center">{exercise.reps}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
                       </div>
                     </div>
                   </div>

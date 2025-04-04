@@ -6,7 +6,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Button } from "@/components/ui/button";
 
 // Import the workout day type from your types file
-// Assuming the types are available in your project
 type WorkoutDay =
   | 'Monday: Upper Body Push'
   | 'Tuesday: Cardio + Abs'
@@ -27,9 +26,17 @@ const workoutTypeMapping: Record<WorkoutDay, string> = {
 
 interface WorkoutSelectorProps {
   onSubmit: (workoutDay: WorkoutDay, startCell: string, exerciseCount: number) => void;
+  buttonText?: string;
+  headerText?: string;
+  description?: string;
 }
 
-const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({ onSubmit }) => {
+const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({ 
+  onSubmit, 
+  buttonText = "Extract Workout Data",
+  headerText = "Workout Data Extractor",
+  description = "Specify workout type and starting cell to extract data"
+}) => {
   const [workoutDay, setWorkoutDay] = useState<WorkoutDay>('Monday: Upper Body Push');
   const [startCell, setStartCell] = useState<string>('A71');
   const [exerciseCount, setExerciseCount] = useState<number>(6);
@@ -40,11 +47,11 @@ const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({ onSubmit }) => {
   };
 
   return (
-    <Card className="w-full max-w-md">
+    <Card className="w-full">
       <CardHeader>
-        <CardTitle>Workout Data Extractor</CardTitle>
+        <CardTitle>{headerText}</CardTitle>
         <CardDescription>
-          Specify workout type and starting cell to extract data
+          {description}
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -102,7 +109,7 @@ const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({ onSubmit }) => {
         </form>
       </CardContent>
       <CardFooter>
-        <Button onClick={handleSubmit} className="w-full">Extract Workout Data</Button>
+        <Button onClick={handleSubmit} className="w-full">{buttonText}</Button>
       </CardFooter>
     </Card>
   );

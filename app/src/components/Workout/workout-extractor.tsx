@@ -1,3 +1,4 @@
+// Modified WorkoutExtractorPage to remove the container constraints
 import React, { useState } from 'react';
 import WorkoutSelector from './workout-selector';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -81,18 +82,21 @@ const WorkoutExtractorPage: React.FC = () => {
   };
 
   return (
-    <div className="container mx-auto p-4 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-6">Workout Data Extractor</h1>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div className="w-full">
+      <div className="grid grid-cols-1 gap-6">
         <div>
-          <WorkoutSelector onSubmit={handleExtractWorkout} />
+          <WorkoutSelector 
+            onSubmit={handleExtractWorkout} 
+            buttonText="Preview Workout Data Only"
+            headerText="Extract for Preview"
+            description="Extract workout data from your Google Sheet for preview before posting to Strava"
+          />
         </div>
         
         <div>
-          <Card>
+          <Card className="w-full">
             <CardHeader>
-              <CardTitle>Extracted Data</CardTitle>
+              <CardTitle>Workout Preview</CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
@@ -104,9 +108,9 @@ const WorkoutExtractorPage: React.FC = () => {
                   <div className="space-y-4">
                     <Alert variant="default" className="bg-green-50 border-green-200">
                       <CheckCircle className="h-5 w-5 text-green-500" />
-                      <AlertTitle className="text-green-700">Success</AlertTitle>
+                      <AlertTitle className="text-green-700">Preview Ready</AlertTitle>
                       <AlertDescription className="text-green-600">
-                        Workout data extracted successfully
+                        Workout data extracted successfully (not posted to Strava)
                       </AlertDescription>
                     </Alert>
                     
@@ -125,24 +129,26 @@ const WorkoutExtractorPage: React.FC = () => {
                       
                       <div className="mt-4">
                         <h4 className="font-medium mb-2">Exercises:</h4>
-                        <Table>
-                          <TableHeader>
-                            <TableRow>
-                              <TableHead>Exercise</TableHead>
-                              <TableHead className="text-center">Sets</TableHead>
-                              <TableHead className="text-center">Avg. Reps</TableHead>
-                            </TableRow>
-                          </TableHeader>
-                          <TableBody>
-                            {result.data?.sections[0]?.exercises.map((exercise, index) => (
-                              <TableRow key={index}>
-                                <TableCell>{exercise.name}</TableCell>
-                                <TableCell className="text-center">{exercise.sets}</TableCell>
-                                <TableCell className="text-center">{exercise.reps}</TableCell>
+                        <div className="overflow-x-auto">
+                          <Table>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Exercise</TableHead>
+                                <TableHead className="text-center">Sets</TableHead>
+                                <TableHead className="text-center">Avg. Reps</TableHead>
                               </TableRow>
-                            ))}
-                          </TableBody>
-                        </Table>
+                            </TableHeader>
+                            <TableBody>
+                              {result.data?.sections[0]?.exercises.map((exercise, index) => (
+                                <TableRow key={index}>
+                                  <TableCell>{exercise.name}</TableCell>
+                                  <TableCell className="text-center">{exercise.sets}</TableCell>
+                                  <TableCell className="text-center">{exercise.reps}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
                       </div>
                     </div>
                   </div>
