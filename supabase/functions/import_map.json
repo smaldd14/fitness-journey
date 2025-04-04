@@ -1,0 +1,9 @@
+{
+  "imports": {
+    "@shared/": "./_shared/",
+    "@simple/hmac": "jsr:@simple/hmac@^0.0.2",
+    "gcp-metadata": "npm:gcp-metadata@5.2.0",
+    "googleapis/": "npm:googleapis@110.0.0/",
+    "google-auth-library/": "npm:google-auth-library@8.7.0/"
+  }
+}
