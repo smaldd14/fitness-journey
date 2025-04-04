@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -25,7 +25,7 @@ const workoutTypeMapping: Record<WorkoutDay, string> = {
 };
 
 interface WorkoutSelectorProps {
-  onSubmit: (workoutDay: WorkoutDay, startCell: string, exerciseCount: number) => void;
+  onSubmit: (workoutDay: WorkoutDay, startCell: string, exerciseCount: number, workoutTime: string) => void;
   buttonText?: string;
   headerText?: string;
   description?: string;
@@ -40,10 +40,19 @@ const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({
   const [workoutDay, setWorkoutDay] = useState<WorkoutDay>('Monday: Upper Body Push');
   const [startCell, setStartCell] = useState<string>('A71');
   const [exerciseCount, setExerciseCount] = useState<number>(6);
+  const [workoutTime, setWorkoutTime] = useState<string>('');
+
+  // Set default time to current time when component loads
+  useEffect(() => {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    setWorkoutTime(`${hours}:${minutes}`);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(workoutDay, startCell, exerciseCount);
+    onSubmit(workoutDay, startCell, exerciseCount, workoutTime);
   };
 
   return (
@@ -104,6 +113,19 @@ const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({
             />
             <p className="text-sm text-muted-foreground">
               How many exercise rows to extract
+            </p>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="workout-time">Workout Time</Label>
+            <Input
+              id="workout-time"
+              type="time"
+              value={workoutTime}
+              onChange={(e) => setWorkoutTime(e.target.value)}
+            />
+            <p className="text-sm text-muted-foreground">
+              Time of day when workout was performed (defaults to current time)
             </p>
           </div>
         </form>

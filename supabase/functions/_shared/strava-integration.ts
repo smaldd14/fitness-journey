@@ -82,8 +82,20 @@ export async function postWorkoutToStrava(
  * Create a Strava-compatible payload from workout data
  */
 function createStravaPayload(workout: WorkoutData): StravaActivityPayload {
-  // Format the date with time for Strava (assuming 9 AM start time if not specified)
-  const startDateTime = `${workout.date}T09:00:00Z`;
+  // Format the date with time for Strava
+  let startDateTime = '';
+  
+  if (workout.workoutTime) {
+    // Use the provided workout time from the UI
+    const [hours, minutes] = workout.workoutTime.split(':');
+    startDateTime = `${workout.date}T${hours}:${minutes}:00`;
+  } else {
+    // Default to current time if no time provided
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    startDateTime = `${workout.date}T${hours}:${minutes}:00`;
+  }
   
   // Create description from workout sections and exercises
   const description = formatWorkoutDescription(workout);
@@ -134,6 +146,12 @@ function formatWorkoutDescription(workout: WorkoutData): string {
   
   // Add some stats and hashtags
   description += `Total workout time: ${formatTime(workout.duration)}\n`;
+  
+  // Add workout time information if available
+  if (workout.workoutTime) {
+    description += `Workout time: ${workout.workoutTime}\n`;
+  }
+  
   description += `#2025FitnessJourney #${workout.focus.replace(/\s+/g, '')}`;
   
   return description;

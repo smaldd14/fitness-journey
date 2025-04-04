@@ -53,6 +53,11 @@ serve(async (req) => {
     console.log('Step 2: Posting workout data to Strava...')
     const workout = extractResult.data
     
+    // Add the workout time to the workout data
+    if (params.workoutTime) {
+      workout.workoutTime = params.workoutTime
+    }
+    
     // Get Strava credentials from environment variables
     const credentials = getStravaCredentials()
     

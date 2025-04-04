@@ -34,6 +34,7 @@ export interface WorkoutData {
   // Date and identification
   date: string;         // In YYYY-MM-DD format
   dayOfWeek: WorkoutDay;
+  workoutTime?: string; // Optional time of day for the workout (e.g., "08:00 AM")
   
   // Workout metadata
   title: string;        // Overall workout title/name
@@ -59,6 +60,7 @@ export interface SheetCellParams {
   workoutDay: WorkoutDay;
   startCell: string;
   exerciseCount: number;
+  workoutTime?: string;
 }
 
 // Response interface for our extraction function

@@ -1,4 +1,3 @@
-// Modified WorkoutExtractorPage to remove the container constraints
 import React, { useState } from 'react';
 import WorkoutSelector from './workout-selector';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -59,7 +58,6 @@ const WorkoutExtractorPage: React.FC = () => {
     setResult(null);
 
     try {
-      // Call the extractWorkoutData service with simplified parameters
       const workoutData = await extractWorkoutData(
         workoutDay,
         startCell,
@@ -119,7 +117,7 @@ const WorkoutExtractorPage: React.FC = () => {
                       <div className="grid grid-cols-2 gap-2 text-sm">
                         <div>Date:</div>
                         <div className="font-medium">{result.data?.date}</div>
-                        
+
                         <div>Focus:</div>
                         <div className="font-medium">{result.data?.focus}</div>
                         

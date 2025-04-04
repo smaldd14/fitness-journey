@@ -31,6 +31,7 @@ interface WorkoutData {
   title: string;
   focus: string;
   duration: number;
+  workoutTime?: string; // Add the time property
   sections: Array<{
     sectionName: string;
     exercises: Array<{
@@ -60,17 +61,19 @@ const WorkoutStravaExtractor: React.FC = () => {
   const handleExtractWorkout = async (
     workoutDay: WorkoutDay,
     startCell: string,
-    exerciseCount: number
+    exerciseCount: number,
+    workoutTime: string
   ) => {
     setIsLoading(true);
     setResult(null);
 
     try {
-      // Call the combined extract and post service
+      // Call the combined extract and post service with the additional time parameter
       const response = await extractAndPostWorkout(
         workoutDay,
         startCell,
-        exerciseCount
+        exerciseCount,
+        workoutTime
       );
 
       setResult(response);
@@ -156,6 +159,9 @@ const WorkoutStravaExtractor: React.FC = () => {
                         <div>Date:</div>
                         <div className="font-medium">{result.data?.date}</div>
                         
+                        <div>Time:</div>
+                        <div className="font-medium">{result.data?.workoutTime || "Not specified"}</div>
+                        
                         <div>Focus:</div>
                         <div className="font-medium">{result.data?.focus}</div>
                         
@@ -199,7 +205,7 @@ const WorkoutStravaExtractor: React.FC = () => {
                 )
               ) : (
                 <div className="text-center text-muted-foreground p-8">
-                  Select workout type and starting cell, then click "Extract Workout Data"
+                  Select workout type and starting cell, then click "Extract & Post to Strava"
                 </div>
               )}
             </CardContent>

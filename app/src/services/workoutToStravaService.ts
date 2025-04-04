@@ -25,7 +25,8 @@ interface WorkoutPostResponse {
 export const extractAndPostWorkout = async (
   workoutDay: WorkoutDay,
   startCell: string,
-  exerciseCount: number
+  exerciseCount: number,
+  workoutTime?: string
 ): Promise<WorkoutPostResponse> => {
   try {
     console.log('Calling workout-to-strava edge function...');
@@ -35,7 +36,8 @@ export const extractAndPostWorkout = async (
       body: {
         workoutDay,
         startCell,
-        exerciseCount
+        exerciseCount,
+        workoutTime: workoutTime || null // Include workoutTime parameter
       },
     });
 
