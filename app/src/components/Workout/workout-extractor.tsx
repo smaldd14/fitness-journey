@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import WorkoutSelector from './workout-selector';
+import WorkoutSelector, { Person } from './workout-selector';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { CheckCircle, AlertCircle } from 'lucide-react';
@@ -52,7 +52,9 @@ const WorkoutExtractorPage: React.FC = () => {
   const handleExtractWorkout = async (
     workoutDay: WorkoutDay,
     startCell: string,
-    exerciseCount: number
+    exerciseCount: number,
+    workoutTime: string,
+    person: Person
   ) => {
     setIsLoading(true);
     setResult(null);
@@ -61,7 +63,9 @@ const WorkoutExtractorPage: React.FC = () => {
       const workoutData = await extractWorkoutData(
         workoutDay,
         startCell,
-        exerciseCount
+        exerciseCount,
+        workoutTime,
+        person
       );
       console.log("got workoutData", workoutData);
 

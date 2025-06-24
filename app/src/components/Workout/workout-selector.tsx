@@ -5,6 +5,12 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 
+export type Person = 'matt' | 'devin';
+
+const personMap: Record<Person, string> = {
+  matt: 'Matt',
+  devin: 'Devin'
+};
 // Import the workout day type from your types file
 type WorkoutDay =
   | 'Monday: Upper Body Push'
@@ -25,7 +31,7 @@ const workoutTypeMapping: Record<WorkoutDay, string> = {
 };
 
 interface WorkoutSelectorProps {
-  onSubmit: (workoutDay: WorkoutDay, startCell: string, exerciseCount: number, workoutTime: string) => void;
+  onSubmit: (workoutDay: WorkoutDay, startCell: string, exerciseCount: number, workoutTime: string, person: Person) => void;
   buttonText?: string;
   headerText?: string;
   description?: string;
@@ -38,6 +44,7 @@ const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({
   description = "Specify workout type and starting cell to extract data"
 }) => {
   const [workoutDay, setWorkoutDay] = useState<WorkoutDay>('Monday: Upper Body Push');
+  const [person, setPerson] = useState<Person>('devin'); // Default to 'matt', can be used if needed in the future
   const [startCell, setStartCell] = useState<string>('A71');
   const [exerciseCount, setExerciseCount] = useState<number>(6);
   const [workoutTime, setWorkoutTime] = useState<string>('');
@@ -52,7 +59,7 @@ const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(workoutDay, startCell, exerciseCount, workoutTime);
+    onSubmit(workoutDay, startCell, exerciseCount, workoutTime, person);
   };
 
   return (
@@ -65,6 +72,24 @@ const WorkoutSelector: React.FC<WorkoutSelectorProps> = ({
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="space-y-2">
+              <Label htmlFor="person-type">Person</Label>
+              <Select
+                value={person}
+                onValueChange={(value) => setPerson(value as Person)}
+              >
+                <SelectTrigger id="person-type" className="w-full">
+                  <SelectValue placeholder="Select Person" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.keys(personMap).map((p) => (
+                    <SelectItem key={p} value={p}>
+                      {p}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+          </div>
           <div className="space-y-2">
             <Label htmlFor="workout-type">Workout Type</Label>
             <Select

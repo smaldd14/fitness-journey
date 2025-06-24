@@ -68,7 +68,8 @@ export async function extractWorkoutFromSheets(
     });
     
     // Get reps from I column
-    const repsRange = calculateRange(startCell, 'I', exerciseCount);
+    const whoseReps = params.user === 'devin' ? 'I' : 'G'
+    const repsRange = calculateRange(startCell, whoseReps, exerciseCount);
     const repsResponse = await sheets.spreadsheets.values.get({
       spreadsheetId,
       range: `${workoutDay}!${repsRange}`

@@ -1,4 +1,5 @@
 // src/services/workoutService.ts
+import { Person } from "@/components/Workout/workout-selector";
 import supabase from "@/db/supabase";
 
 // Workout types - copy from your types file
@@ -43,7 +44,9 @@ interface WorkoutData {
 export const extractWorkoutData = async (
   workoutDay: WorkoutDay,
   startCell: string,
-  exerciseCount: number
+  exerciseCount: number,
+  workoutTime: string,
+  person: Person
 ): Promise<WorkoutData> => {
   try {
     // Calculate the ranges based on the start cell and count
@@ -52,7 +55,9 @@ export const extractWorkoutData = async (
     const body = {
         workoutDay,
         startCell: dateCell,
-        exerciseCount
+        exerciseCount,
+        workoutTime,
+        user: person
     };
     console.log("body", body);
     // Call the Supabase Edge Function

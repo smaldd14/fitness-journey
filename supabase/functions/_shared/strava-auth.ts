@@ -91,10 +91,10 @@ export interface StravaCredentials {
   /**
    * Get Strava credentials from environment variables
    */
-  export function getStravaCredentials(): StravaCredentials {
-    const clientId = Deno.env.get('STRAVA_CLIENT_ID');
-    const clientSecret = Deno.env.get('STRAVA_CLIENT_SECRET');
-    const refreshToken = Deno.env.get('STRAVA_REFRESH_TOKEN');
+  export function getStravaCredentials(user: 'DEVIN' | 'MATT'): StravaCredentials {
+    const clientId = Deno.env.get(`STRAVA_CLIENT_ID_${user}`);
+    const clientSecret = Deno.env.get(`STRAVA_CLIENT_SECRET_${user}`);
+    const refreshToken = Deno.env.get(`STRAVA_REFRESH_TOKEN_${user}`);
     
     if (!clientId || !clientSecret || !refreshToken) {
       throw new Error('Missing Strava credentials. Please set STRAVA_CLIENT_ID, STRAVA_CLIENT_SECRET, and STRAVA_REFRESH_TOKEN environment variables.');

@@ -15,9 +15,9 @@ serve(async (req) => {
   try {
     // Parse the request body
     const params = await req.json() as SheetCellParams
-    
+    console.log("Received parameters:", params)
     // Validate input
-    if (!params.workoutDay || !params.startCell || !params.exerciseCount) {
+    if (!params.workoutDay || !params.startCell || !params.exerciseCount || !params.user) {
       return new Response(
         JSON.stringify({ 
           success: false, 
@@ -59,7 +59,8 @@ serve(async (req) => {
     }
     
     // Get Strava credentials from environment variables
-    const credentials = getStravaCredentials()
+    const user = params.user === 'devin' ? 'DEVIN' : 'MATT'
+    const credentials = getStravaCredentials(user)
     
     // Post workout to Strava
     const stravaResult = await postWorkoutToStrava(workout, credentials)

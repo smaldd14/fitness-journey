@@ -19,6 +19,11 @@ const routes: RoutesConfig = [
     component: HomePage,
     index: true,
   },
+  {
+    path: "/strava",
+    key: "Strava",
+    component: HomePage,
+  }
 ];
 
 export default routes;

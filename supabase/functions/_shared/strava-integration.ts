@@ -55,6 +55,7 @@ export async function postWorkoutToStrava(
     // Check if the request was successful
     if (!response.ok) {
       const errorData = await response.json() as any;
+      console.log('errorData: ', errorData);
       throw new Error(`Strava API error: ${errorData.message || response.statusText}`);
     }
     

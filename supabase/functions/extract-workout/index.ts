@@ -15,7 +15,7 @@ serve(async (req) => {
     const params = await req.json() as SheetCellParams
     
     // Validate input
-    if (!params.workoutDay || !params.startCell || !params.exerciseCount) {
+    if (!params.workoutDay || !params.startCell || !params.exerciseCount || !params.user) {
       return new Response(
         JSON.stringify({ 
           success: false, 

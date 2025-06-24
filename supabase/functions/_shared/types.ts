@@ -57,6 +57,7 @@ export interface WorkoutData {
 
 // Interface for Google Sheets cell parameters
 export interface SheetCellParams {
+  user: 'matt' | 'devin';
   workoutDay: WorkoutDay;
   startCell: string;
   exerciseCount: number;
