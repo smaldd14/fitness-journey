@@ -1,4 +1,6 @@
 import HomePage from '@/pages/Home';
+import { LoginPage } from '@/pages/auth/Login';
+import { AuthCallbackPage } from '@/pages/auth/Callback';
 import { ComponentType } from 'react';
 
 export type RouteType = {
@@ -18,6 +20,16 @@ const routes: RoutesConfig = [
     key: "Root",
     component: HomePage,
     index: true,
+  },
+  {
+    path: "/login",
+    key: "Login",
+    component: LoginPage,
+  },
+  {
+    path: "/auth/callback",
+    key: "AuthCallback",
+    component: AuthCallbackPage,
   },
 ];
 
