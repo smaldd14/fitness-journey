@@ -1,7 +1,7 @@
 -- Setup Row Level Security (RLS) policies with reusable functions
 
 -- Create reusable security functions
-CREATE OR REPLACE FUNCTION auth.user_owns_workout(workout_uuid UUID)
+CREATE OR REPLACE FUNCTION user_owns_workout(workout_uuid UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
     RETURN EXISTS (
@@ -12,7 +12,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE OR REPLACE FUNCTION auth.user_owns_routine(routine_uuid UUID)
+CREATE OR REPLACE FUNCTION user_owns_routine(routine_uuid UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
     RETURN EXISTS (
@@ -23,7 +23,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE OR REPLACE FUNCTION auth.user_owns_exercise(exercise_uuid UUID)
+CREATE OR REPLACE FUNCTION user_owns_exercise(exercise_uuid UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
     RETURN EXISTS (
@@ -34,7 +34,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
-CREATE OR REPLACE FUNCTION auth.exercise_is_public_or_owned(exercise_uuid UUID)
+CREATE OR REPLACE FUNCTION exercise_is_public_or_owned(exercise_uuid UUID)
 RETURNS BOOLEAN AS $$
 BEGIN
     RETURN EXISTS (
@@ -72,10 +72,10 @@ CREATE POLICY "Users can create exercises" ON exercises
     FOR INSERT WITH CHECK (auth.uid() = created_by);
 
 CREATE POLICY "Users can update their own exercises" ON exercises
-    FOR UPDATE USING (auth.user_owns_exercise(id));
+    FOR UPDATE USING (user_owns_exercise(id));
 
 CREATE POLICY "Users can delete their own exercises" ON exercises
-    FOR DELETE USING (auth.user_owns_exercise(id));
+    FOR DELETE USING (user_owns_exercise(id));
 
 -- Workouts table policies
 CREATE POLICY "Users can view their own workouts" ON workouts
@@ -92,10 +92,10 @@ CREATE POLICY "Users can delete their own workouts" ON workouts
 
 -- Workout_exercises table policies
 CREATE POLICY "View workout exercises for owned workouts" ON workout_exercises
-    FOR SELECT USING (auth.user_owns_workout(workout_id));
+    FOR SELECT USING (user_owns_workout(workout_id));
 
 CREATE POLICY "Manage workout exercises for owned workouts" ON workout_exercises
-    FOR ALL USING (auth.user_owns_workout(workout_id));
+    FOR ALL USING (user_owns_workout(workout_id));
 
 -- Routines table policies
 CREATE POLICY "Users can view their own routines" ON routines
@@ -112,10 +112,10 @@ CREATE POLICY "Users can delete their own routines" ON routines
 
 -- Routine_workouts table policies
 CREATE POLICY "View routine workouts for owned routines" ON routine_workouts
-    FOR SELECT USING (auth.user_owns_routine(routine_id));
+    FOR SELECT USING (user_owns_routine(routine_id));
 
 CREATE POLICY "Manage routine workouts for owned routines" ON routine_workouts
-    FOR ALL USING (auth.user_owns_routine(routine_id));
+    FOR ALL USING (user_owns_routine(routine_id));
 
 -- User_workout_history table policies
 CREATE POLICY "Users can view their own workout history" ON user_workout_history
