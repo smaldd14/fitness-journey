@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { User, Session } from '@supabase/supabase-js';
-import supabase from '@/db/supabase';
+import supabase, { auth } from '@/db/supabase';
 
 interface AuthState {
   user: User | null;
@@ -10,10 +10,10 @@ interface AuthState {
   signInWithGoogle: () => Promise<void>;
   signOut: () => Promise<void>;
   initialize: () => Promise<void>;
-  createUserProfile: (user: User) => Promise<void>;
   setUser: (user: User | null) => void;
   setSession: (session: Session | null) => void;
   setLoading: (loading: boolean) => void;
+  refreshUser: (user: User) => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>((set, get) => ({
@@ -27,68 +27,16 @@ export const useAuthStore = create<AuthState>((set, get) => ({
   setLoading: (loading) => set({ loading }),
 
   initialize: async () => {
-    try {
-      set({ loading: true });
-
-      // Get initial session
-      const { data: { session } } = await supabase.auth.getSession();
-      set({ 
-        session, 
-        user: session?.user ?? null,
-        loading: false,
-        initialized: true 
-      });
-
-      // Listen for auth changes
-      supabase.auth.onAuthStateChange(async (event, session) => {
-        set({ 
-          session, 
-          user: session?.user ?? null,
-          loading: false 
-        });
-
-        // Create user profile if it doesn't exist
-        if (event === 'SIGNED_IN' && session?.user) {
-          await get().createUserProfile(session.user);
-        }
-      });
-    } catch (error) {
-      console.error('Error initializing auth:', error);
-      set({ loading: false, initialized: true });
+    set({ loading: true });
+    const { data: { user } } = await auth.getUser();
+    if (user) {
+        await get().refreshUser(user);
+    } else {
+        set({ user: null });
     }
+    set({ loading: false });
   },
 
-  createUserProfile: async (user: User) => {
-    try {
-      // Check if user already exists
-      const { data: existingUser } = await supabase
-        .from('users')
-        .select('id')
-        .eq('id', user.id)
-        .single();
-
-      if (!existingUser) {
-        // Create new user profile
-        const { error } = await supabase
-          .from('users')
-          .insert({
-            id: user.id,
-            email: user.email!,
-            full_name: user.user_metadata?.full_name || user.user_metadata?.name,
-            avatar_url: user.user_metadata?.avatar_url,
-            username: user.user_metadata?.preferred_username || 
-                     user.email?.split('@')[0] || 
-                     `user_${user.id.slice(0, 8)}`
-          });
-
-        if (error) {
-          console.error('Error creating user profile:', error);
-        }
-      }
-    } catch (error) {
-      console.error('Error in createUserProfile:', error);
-    }
-  },
 
   signInWithGoogle: async () => {
     try {
@@ -135,5 +83,42 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       set({ loading: false });
       throw error;
     }
+  },
+  refreshUser: async (user: User) => {
+
+    const { data, error } = await supabase
+            .from('users')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+    if (error) throw error;
+
+    set({ user: { ...data } });
   }
 }));
+
+const setupAuthListener = () => {
+  const { setUser, refreshUser } = useAuthStore.getState();
+  
+  return auth.onAuthStateChange((event, session) => {
+      console.debug('Auth event:', event); // Helpful for debugging
+      
+      setTimeout(async () => {
+          const currentState = useAuthStore.getState();
+          
+          if (session?.user) {
+              if (!currentState.user || currentState.user.id !== session.user.id) {
+                  refreshUser(session.user);
+              }
+          } else if (currentState.user !== null) {
+              setUser(null);
+          }
+      }, 0);
+  });
+};
+
+export const initializeAuth = async () => {
+  await useAuthStore.getState().initialize();
+  return setupAuthListener();
+};
