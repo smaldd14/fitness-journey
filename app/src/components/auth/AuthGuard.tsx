@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
 import { useAuthStore } from '@/stores/authStore';
@@ -12,23 +12,16 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
   children, 
   requireAuth = true 
 }) => {
-  const { user, loading, initialized, initialize } = useAuthStore();
+  const { user, loading } = useAuthStore();
   const location = useLocation();
 
-  useEffect(() => {
-    if (!initialized) {
-      initialize();
-    }
-  }, [initialized, initialize]);
-
   // Show loading spinner while auth is initializing
-  if (loading || !initialized) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
           <h2 className="text-lg font-semibold">Loading...</h2>
-          <p className="text-gray-600">Please wait while we check your authentication.</p>
         </div>
       </div>
     );
